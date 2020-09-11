@@ -305,3 +305,120 @@ The web APIs add each async task to the callback queue where they wait  to be pu
 
 The event loop has one important job: monitor the call stack and  callback queue. Anytime the call stack is empty, the event loop takes  the first task from the callback queue and pushes it onto the call  stack, and runs it.
 
+## Default Parameters
+
+```javascript
+function greet(name = 'Piotr', timeOfDay = 'Day') {
+    console.log(`Good ${timeOfDay}, ${name}!`);
+}
+
+// we can pass undefined to function with defined default parameters
+// and the function will use default value for this parameter
+greet(undefined, 'Afternoon');
+```
+
+## Rest Parameters and Spread Operator
+
+#### Rest Parameter
+
+```javascript
+// rest parameter is three dots ... before variable params
+// variable name can be any name, it doesn't have to be params
+// Rest Operator have to be assigned to the last function argument
+function myFunction(name, ...params) {
+    console.log(name, params);
+}
+
+// when calling function with rest parameter we can call it with more arguments
+// in this example I call 2 argument function using 6 arguments
+// rest parameter makes argument ...params contain an array of all arguments
+// that have been passed after the first one
+myFunction('Piotr', 1, 2, 3, 4, 'Dawid')
+```
+
+#### Spread Operator
+
+```javascript
+'use strict';
+
+// spread operator enables arrays to be nested
+// anything added to oldFlavors or newFlavors will be added to inventory as well
+const oldFlavors = ['Chocolate', 'Vanilla'];
+
+const newFlavors = ['Strawberry', 'Mint Chocolate Chip'];
+
+const inventory = ['Rocky Road', ...oldFlavors, 'Neapolitan', ...newFlavors];
+
+console.log(inventory);
+```
+
+```javascript
+'use strict';
+
+function myFunction(name, iceCreamFlavor) {
+    console.log(`${name} really likes ${iceCreamFlavor} ice cream.`)
+}
+
+let args = ['Piotr', 'Chocolate'];
+
+// it can also be used to get arguments for array and pass it to a function call
+myFunction(...args)
+```
+
+## De-structuring
+
+```javascript
+'use strict';
+
+let toybox = { item1: 'car', item2: 'ball', item3: 'frisbee'};
+
+// de-structuring lets you take pieces of object and place them in a variable
+let {item1, item2} = toybox;
+
+console.log(item1, item2);
+
+// it can also create new variables inside parentheses
+let {item3: disc} = toybox;
+
+console.log(disc);
+```
+
+```javascript
+'use strict';
+
+let widgets = ['widget1', 'widget2', 'widget3', 'widget4', 'widget5'];
+
+let [a, b, c, ...d] = widgets;
+
+console.log(d);
+```
+
+```javascript
+function getData({ url, method = 'post' } = {}, callback) {
+    callback(url, method);
+}
+
+getData({ url: 'myposturl.com' }, function (url, method) {
+    console.log(url, method);
+});
+
+getData({ url: 'myputurl.com', method: 'put' }, function (url, method) {
+    console.log(url, method);
+});
+```
+
+```javascript
+'use strict';
+
+let parentObject = {
+    title: 'Super Important',
+    childObject: {
+        title: 'Equally Important'
+    }
+}
+
+let { title, childObject: { title: childTitle } } = parentObject
+
+console.log(childTitle);
+```
+
