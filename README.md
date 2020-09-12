@@ -422,3 +422,259 @@ let { title, childObject: { title: childTitle } } = parentObject
 console.log(childTitle);
 ```
 
+## Object Property Shorthand
+
+```javascript
+'use strict';
+
+function submit(name, comments, rating = 5) {
+	let data = { name, comments, rating };
+	
+	for (let key in data) {
+		console.log(key + ':', data[key]);
+	}
+	// ... do ajax request
+}
+
+submit('English', 'Great course!', 9);
+```
+
+## For...Of and For...In loop
+
+```javascript
+for (let teacher of teachers) {
+    console.log(teacher.name);
+    if (teacher.name === 'Nick') {
+        console.log(teacher.rating);
+        break;
+    }
+}
+```
+
+```javascript
+const object = { a: 1, b: 2, c: 3 };
+
+for (const property in object) {
+  console.log(`${property}: ${object[property]}`);
+}
+```
+
+## Set
+
+`Set` objects are collections of values. You can iterate through the elements of a set in insertion order. A value in the `Set` **may only occur once**; it is unique in the `Set`'s collection.
+
+Because each value in the `Set` has to be unique, the value equality will be checked. In an earlier version of ECMAScript specification, this was not based on the same algorithm as the one used in the `===` operator. Specifically, for `Set`s, `+0` (which is strictly equal to `-0`) and `-0` were different values. However, this was changed in the ECMAScript 2015 specification. See *"Key equality for -0 and 0"* in the [browser compatibility](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#Browser_compatibility) table for details.
+
+[`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN) and [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined) can also be stored in a Set. All `NaN` values are equated (i.e. `NaN` is considered the same as `NaN`, even though `NaN !== NaN`).
+
+```javascript
+let mySet = new Set()
+
+mySet.add(1)           // Set [ 1 ]
+mySet.add(5)           // Set [ 1, 5 ]
+mySet.add(5)           // Set [ 1, 5 ]
+mySet.add('some text') // Set [ 1, 5, 'some text' ]
+let o = {a: 1, b: 2}
+mySet.add(o)
+
+mySet.add({a: 1, b: 2})   // o is referencing a different object, so this is okay
+
+mySet.has(1)              // true
+mySet.has(3)              // false, since 3 has not been added to the set
+mySet.has(5)              // true
+mySet.has(Math.sqrt(25))  // true
+mySet.has('Some Text'.toLowerCase()) // true
+mySet.has(o)       // true
+
+mySet.size         // 5
+
+mySet.delete(5)    // removes 5 from the set
+mySet.has(5)       // false, 5 has been removed
+
+mySet.size         // 4, since we just removed one value
+
+console.log(mySet)
+// logs Set(4) [ 1, "some text", {…}, {…} ] in Firefox
+// logs Set(4) { 1, "some text", {…}, {…} } in Chrome
+```
+
+## Map
+
+A `Map` object iterates its elements in insertion order — a [`for...of`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of) loop returns an array of `[key, value]` for each iteration.
+
+- Key equality is based on the [`sameValueZero`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness#Same-value-zero_equality) algorithm.
+- [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN) is considered the same as `NaN` (even though `NaN !== NaN`) and all other values are considered equal according to the semantics of the `===` operator.
+- In the current ECMAScript specification, `-0` and `+0` are considered equal.
+
+```javascript
+let myMap = new Map()
+
+let keyString = 'a string'
+let keyObj    = {}
+let keyFunc   = function() {}
+
+// setting the values
+myMap.set(keyString, "value associated with 'a string'")
+myMap.set(keyObj, 'value associated with keyObj')
+myMap.set(keyFunc, 'value associated with keyFunc')
+
+myMap.size              // 3
+
+// getting the values
+myMap.get(keyString)    // "value associated with 'a string'"
+myMap.get(keyObj)       // "value associated with keyObj"
+myMap.get(keyFunc)      // "value associated with keyFunc"
+
+myMap.get('a string')    // "value associated with 'a string'"
+                         // because keyString === 'a string'
+myMap.get({})            // undefined, because keyObj !== {}
+myMap.get(function() {}) // undefined, because keyFunc !== function () {}
+```
+
+```javascript
+let myMap = new Map()
+myMap.set(0, 'zero')
+myMap.set(1, 'one')
+
+for (let [key, value] of myMap) {
+  console.log(key + ' = ' + value)
+}
+// 0 = zero
+// 1 = one
+
+for (let key of myMap.keys()) {
+  console.log(key)
+}
+// 0
+// 1
+
+for (let value of myMap.values()) {
+  console.log(value)
+}
+// zero
+// one
+
+for (let [key, value] of myMap.entries()) {
+  console.log(key + ' = ' + value)
+}
+// 0 = zero
+// 1 = one
+```
+
+## Classes
+
+```javascript
+class Rectangle {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+}
+```
+
+An important difference between **function declarations** and **class declarations** is that function declarations are [hoisted](https://developer.mozilla.org/en-US/docs/Glossary/Hoisting) and class declarations are not. You first need to declare your class and then access it, otherwise code like the following will throw a [`ReferenceError`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError):
+
+```javascript
+const p = new Rectangle(); // ReferenceError
+
+class Rectangle {}
+```
+
+A **class expression** is another way to define a class. Class expressions can be named or unnamed. The name given to a named class expression is local to the class's body. (it can be retrieved through the class's (not an instance's) [`name`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name) property, though).
+
+```javascript
+// unnamed
+let Rectangle = class {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+};
+console.log(Rectangle.name);
+// output: "Rectangle"
+
+// named
+let Rectangle = class Rectangle2 {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+};
+console.log(Rectangle.name);
+// output: "Rectangle2"
+```
+
+## Extending Classes
+
+```javascript
+class DateFormatter extends Date {
+
+  getFormattedDate() {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${this.getDate()}-${months[this.getMonth()]}-${this.getFullYear()}`;
+  }
+
+}
+
+console.log(new DateFormatter('August 19, 1975 23:15:30').getFormattedDate());
+// expected output: "19-Aug-1975"
+```
+
+```javascript
+class Animal { 
+  constructor(name) {
+    this.name = name;
+  }
+  
+  speak() {
+    console.log(`${this.name} makes a noise.`);
+  }
+}
+
+class Dog extends Animal {
+  constructor(name) {
+    super(name); // call the super class constructor and pass in the name parameter
+  }
+
+  speak() {
+    console.log(`${this.name} barks.`);
+  }
+}
+
+let d = new Dog('Mitzie');
+d.speak(); // Mitzie barks.
+```
+
+## Static Method
+
+```javascript
+class ClassWithStaticMethod {
+  static staticMethod() {
+    return 'static method has been called.';
+  }
+}
+
+console.log(ClassWithStaticMethod.staticMethod());
+// expected output: "static method has been called."
+```
+
+## Getters and Setters
+
+```javascript
+var o = {
+  a: 7,
+  get b() { 
+    return this.a + 1;
+  },
+  set c(x) {
+    this.a = x / 2;
+  }
+};
+
+console.log(o.a); // 7
+console.log(o.b); // 8 <-- At this point the get b() method is initiated.
+o.c = 50;         //   <-- At this point the set c(x) method is initiated
+console.log(o.a); // 25
+```
+
